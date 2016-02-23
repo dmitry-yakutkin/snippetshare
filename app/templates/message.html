@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block heading %}
+<h1>Write the message</h1>
+<p>Enter your message text </p>
+{% endblock %}
+
+{% block content %}
+<form action="/message/" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" class="btn btn-default" />
+</form>
+{% endblock %}
