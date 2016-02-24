@@ -8,7 +8,8 @@ class Message(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Message: text={}, date={}, user={}'.format(self.text, self.date, self.user.username)
+        return 'Message: text={}, date={}, user={}'.format(
+            self.text, self.date, self.user.username)
 
 
 class Snippet(models.Model):

@@ -25,4 +25,3 @@ urlpatterns = patterns(
 
     url(r'^api/', include(api_patterns)),
 )
-
