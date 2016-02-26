@@ -6,8 +6,11 @@ from app.views import users_snippets_view, NewSnippetView, comment_view
 import app.api as api
 
 api_patterns = [
-    url(r'^snippet/([0-9])', api.SnippetView.as_view()),
-    url(r'^users-snippets/', api.UsersSnippetsView.as_view())
+    url(r'^', include('rest_framework.urls', namespace='rest_framework')),
+
+    url(r'^snippet/(?P<id>[0-9]+)/$', api.SnippetView.as_view()),
+    url(r'^users-snippets/', api.UsersSnippetsView.as_view()),
+    url(r'^all-snippets', api.AllSnippetsView.as_view()),
 ]
 
 urlpatterns = patterns(
