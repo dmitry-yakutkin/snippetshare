@@ -1,4 +1,7 @@
+import pdb
+
 from django.shortcuts import redirect, render
+from django.core.urlresolvers import reverse
 
 from django.views.generic import FormView, TemplateView, View
 from .forms import LoginForm, RegisterForm, MessageForm
@@ -13,6 +16,9 @@ from app.models import Snippet, Comment
 
 class HomeView(View):
     def get(self, request):
+        #pdb.set_trace()
+        if request.user.is_authenticated():
+            return redirect(reverse('userssnippets'))
         return render(request, 'index.html', {})
 
 

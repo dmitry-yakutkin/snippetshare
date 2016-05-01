@@ -3,9 +3,14 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Guest Book</title>
+    <style>
+        .mydiv {
+          height:100vh;
+          overflow-y: scroll;
+        }
+    </style>
 </head>
 <body ng-controller="MainController">
-
     {% load staticfiles %}
     <script src="{% static 'jquery-1.11.3.min.js' %}"></script>
     <script src="{% static 'CodeMirror/lib/codemirror.js' %}"></script>
@@ -18,26 +23,38 @@
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}" >
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}">
 
-    <div class="container">
-        <div class="panel panel-default row">
-            <div class="panel panel-body col-sm-9">
-                <div class="panel panel-body">
-                    <input class="btn btn-default glyphicon-search" type="button" ng-click="postSnippet()" value="Submit" />
-                </div>
-                <span type="text" id="view"></span>
-                <div class="panel panel-default">
-                    <div class="panel panel-body">
-                        <form method="post" action="/comment/{{id}}/">
-                            {% csrf_token %}
-                            <input type="text" name="text" />
-                            <p></p>
-                            <input type="submit" value="Comment"/>
-                        </form>
-                    </div>
-                </div>
+    <div class="container-fluid">
+        <div class="row">
+    		<div class="col-lg-9">
+    			<div class="row" style="height:5vh">
+    				<div class="col-lg-12">
+                        <div class="panel panel-body">
+                            <input class="btn btn-default glyphicon-search" type="button" ng-click="postSnippet()" value="Submit snippet" />
+                        </div>
+    				</div>
+    			</div>
+    			<div class="row" style="height:70vh">
+    				<div class="col-md-12">
+                        <!-- <span type="text" id="view"></span> -->
+                        <textarea id="view"></textarea>
+    				</div>
+    			</div>
+                <div class="row" style="height:25vh">
+    				<div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel panel-body">
+                                <form method="post" action="/comment/{{id}}/">
+                                    {% csrf_token %}
+                                    <input type="text" name="text" />
+                                    <p></p>
+                                    <input type="submit" value="Comment"/>
+                                </form>
+                            </div>
+                        </div>
+    				</div>
+    			</div>
             </div>
-            
-            <div class="col-sm-3">
+            <div class="col-lg-3 mydiv">
                 {% for comment in comments %}
                 <div class="panel panel-info">
                     <div class="panel-heading">
@@ -50,13 +67,8 @@
                 </div>
                 {% endfor %}
             </div>
-            
         </div>
-
     </div>
-
-    
-
     <script>
         angular.module('SnippetShare', [])
             .config(function($httpProvider) {
@@ -65,7 +77,7 @@
             })
             .factory('SnippetService', ['$http', function($http) {
                 return {
-                    link: '/api/snippet/{{id}}',
+                    link: '/api/snippet/{{id}}/',
                     fetchSnippet: function(callback) {
                         $http.get(this.link, {})
                             .then(function(response) {
@@ -78,15 +90,14 @@
                 };
             }])
             .controller('MainController', ['$scope', 'SnippetService', function($scope, SnippetService) {
-                var mode = "python";
+                var mode = "javascript";
 
                 $scope.code = null;
-                var view = document.getElementById("view");
-                $scope.myCodeMirror = CodeMirror(view, {
-                    'mode':  mode,
-                    'theme': 'cobalt'
+                $scope.myCodeMirror = CodeMirror.fromTextArea(document.getElementById("view"), {
+                    lineNumbers: true,
+                    indentUnit: 4
                 });
-                
+
                 var updateSnippet = function() {
                     SnippetService.fetchSnippet(function(data) {
                         console.log(data);
@@ -102,11 +113,5 @@
                 updateSnippet();
             }]);
     </script>
-
-    <script>
-        
-    </script>
-
-    <script src="{% static 'CodeMirror/mode/python/python.js' %}"></script>
 </body>
 </html>

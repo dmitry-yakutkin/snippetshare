@@ -5,25 +5,26 @@
     <title>Guest Book</title>
 </head>
 <body>
-<div class="jumbotron">
-    <div class="container">
-        {% block heading %}{% endblock %}
+    <div class="row-lg-1">
+        <div class="page-header">
+            {% block heading %}{% endblock %}
+        </div>
     </div>
-</div>
-<div class="panel panel-default">
-    <div class="panel-body">
-        {% block content %}{% endblock %}
+    <div class="row-lg-11">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
     </div>
-</div>
 
-{% load staticfiles %}
-<link rel="stylesheet" href="{% static 'CodePen/css/normalize.css' %}">
-<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}" >
-<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}">
-<script src="{% static 'jquery-1.11.3.min.js' %}"></script>
-<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'CodePen/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}" >
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}">
+    <script src="{% static 'jquery-1.11.3.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 
-<script src="{% static 'app.js' %}"></script>
-
+    <script src="{% static 'app.js' %}"></script>
 </body>
 </html>
