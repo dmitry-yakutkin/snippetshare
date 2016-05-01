@@ -2,13 +2,7 @@
 <html ng-app="SnippetShare">
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Guest Book</title>
-    <style>
-        .mydiv {
-          height:100vh;
-          overflow-y: scroll;
-        }
-    </style>
+    <title>Snippetshare</title>
 </head>
 <body ng-controller="MainController">
     {% load staticfiles %}
@@ -19,56 +13,151 @@
     <link rel="stylesheet" href="{% static 'CodeMirror/theme/cobalt.css' %}">
     <script src="{% static 'CodeMirror/mode/python/python.js' %}"></script>
     <script src="{% static 'CodeMirror/mode/javascript/javascript.js' %}"></script>
+    <script src="{% static 'CodeMirror/mode/go/go.js' %}"></script>
+
+    <script src="{% static 'CodeMirror/mode/htmlmixed/htmlmixed.js' %}"></script>
+    <script src="{% static 'CodeMirror/mode/xml/xml.js' %}"></script>
+    <script src="{% static 'CodeMirror/mode/css/css.js' %}"></script>
+
+    <script src="{% static 'CodeMirror/mode/ruby/ruby.js' %}"></script>
+    <script type="text/javascript" src="{% static 'materialize/js/materialize.min.js' %}"></script>
+
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="{% static 'materialize/css/materialize.min.css' %}"/>
+<!--
 
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}" >
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}"> -->
 
-    <div class="container-fluid">
-        <div class="row">
-    		<div class="col-lg-9">
-    			<div class="row" style="height:5vh">
-    				<div class="col-lg-12">
-                        <div class="panel panel-body">
-                            <input class="btn btn-default glyphicon-search" type="button" ng-click="postSnippet()" value="Submit snippet" />
-                        </div>
-    				</div>
-    			</div>
-    			<div class="row" style="height:70vh">
-    				<div class="col-md-12">
-                        <!-- <span type="text" id="view"></span> -->
+    <style>
+
+    .hide-scroll {
+        overflow: hidden;
+        }
+
+        .viewport {
+        overflow: auto;
+
+        /* Make sure the inner div is not larger than the container
+         * so that we have room to scroll.
+         */
+        max-height: 100%;
+
+        /* Pick an arbitrary margin/padding that should be bigger
+         * than the max width of all the scroll bars across
+         * the devices you are targeting.
+         * padding = -margin
+         */
+        margin-right: -100px;
+        padding-right: 100px;
+        }
+
+        .scrolldiv {
+          height: 100vh;
+          overflow-y: scroll;
+        }
+
+        /* label color */
+      .input-field label {
+        color: #aa00ff;
+      }
+      /* label focus color */
+      .input-field input[type=text]:focus + label {
+        color: #aa00ff;
+      }
+      /* label underline focus color */
+      .input-field input[type=text]:focus {
+        border-bottom: 1px solid #aa00ff;
+        box-shadow: 0 1px 0 0 #aa00ff;
+      }
+      /* valid color */
+      .input-field input[type=text].valid {
+        border-bottom: 1px solid #aa00ff;
+        box-shadow: 0 1px 0 0 #aa00ff;
+      }
+      /* invalid color */
+      .input-field input[type=text].invalid {
+        border-bottom: 1px solid #aa00ff;
+        box-shadow: 0 1px 0 0 #aa00ff;
+      }
+      /* icon prefix focus color */
+      .input-field .prefix.active {
+        color: #aa00ff;
+      }
+    </style>
+    <div>
+        <div class="row" style="height:100vh">
+    		<div class="col s8">
+    			<div class="row" style="height:75vh">
+    				<!-- <div class="col s12"> -->
                         <textarea id="view"></textarea>
-    				</div>
+    				<!-- </div> -->
     			</div>
+
                 <div class="row" style="height:25vh">
-    				<div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel panel-body">
-                                <form method="post" action="/comment/{{id}}/">
-                                    {% csrf_token %}
-                                    <input type="text" name="text" />
-                                    <p></p>
-                                    <input type="submit" value="Comment"/>
-                                </form>
+
+                    <form method="post" action="/comment/{{id}}/">
+                        {% csrf_token %}
+                        <div class="input-field">
+                            <i class="material-icons prefix medium">email</i>
+                            <input type="text" name="text" class="validate" />
+                        </div>
+                        <p></p>
+                        <div class="row">
+                            <div class="col s6 left-align">
+                                <input class="waves-effect waves-light btn purple accent-4" type="submit" value="Comment"/>
+                            </div>
+
+                            <div class="col s6 right-align">
+                                <div class="row">
+                                    <div class="col s4">
+                                        <ul id="dropdown2" class="dropdown-content">
+                                            <li><a href="#!" ng-click="switchLanguage('python')">Python</a></li>
+                                            <li><a href="#!" ng-click="switchLanguage('go')">Go</a></li>
+                                            <li><a href="#!" ng-click="switchLanguage('javascript')">Javascript</a></li>
+                                            <li><a href="#!" ng-click="switchLanguage('ruby')">Ruby</a></li>
+                                            <li><a href="#!" ng-click="switchLanguage('htmlmixed')">HTML</a></li>
+                                        </ul>
+                                        <a class="btn-floating btn-large dropdown-button deep-orange accent-3" data-activates="dropdown2"><i class="large material-icons mdi-navigation-arrow-drop-down right">code</i></a>
+                                    </div>
+                                    <div class="col s4">
+                                        <a href="{% url 'userssnippets' %}" class="btn-floating btn-large yellow accent-4"><i class="large material-icons">toc</i></a>
+                                    </div>
+                                    <div class="col s4">
+                                        <a class="btn-floating btn-large green darken-1" ng-click="postSnippet()"><i class="large material-icons">done</i></a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-    				</div>
+                    </form>
+
+
+
     			</div>
             </div>
-            <div class="col-lg-3 mydiv">
-                {% for comment in comments %}
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">{{comment.user.username}}</h3>
-                    </div>
-                    <div class="panel-body">
-                        {{comment.text}}
-                    </div>
-                    <div class="panel-footer">{{comment.date}}</div>
+            <div class="col s5 m5 l4">
+                <div>
+                    <ul class="collection scrolldiv">
+                        {% for comment in comments reversed %}
+                        <li class="collection-item avatar">
+                            <i class="material-icons material-icons purple-text text-accent-4">comment</i>
+                            <span class="title">{{comment.user.username}}</span>
+                            <p>{{comment.date}}</p>
+                            <p><blockquote>{{comment.text}}</blockquote></p>
+                            <a href="#{{comment.id}}" class="secondary-content">
+                                <i class="material-icons purple-text text-accent-4">trending_flat</i>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
-                {% endfor %}
+
             </div>
         </div>
     </div>
+
     <script>
         angular.module('SnippetShare', [])
             .config(function($httpProvider) {
@@ -95,20 +184,22 @@
                 $scope.code = null;
                 $scope.myCodeMirror = CodeMirror.fromTextArea(document.getElementById("view"), {
                     lineNumbers: true,
-                    indentUnit: 4
+                    indentUnit: 4,
+                    mode: mode
                 });
 
                 var updateSnippet = function() {
                     SnippetService.fetchSnippet(function(data) {
-                        console.log(data);
                         $scope.code = data;
                         $scope.myCodeMirror.setValue(data[0].fields.text);
                     });
                 }
                 $scope.postSnippet = function() {
                     var content = $scope.myCodeMirror.getValue();
-                    console.log(content);
                     SnippetService.sendSnippet(content);
+                }
+                $scope.switchLanguage = function(language) {
+                    $scope.myCodeMirror.setOption('mode', language);
                 }
                 updateSnippet();
             }]);
