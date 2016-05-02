@@ -1,5 +1,6 @@
 from django.views.generic import View
-from django.core.serializers import serialize
+from django.core.serializers import serialize, deserialize
+import json
 from django.http import HttpResponse
 
 from rest_framework.views import APIView, Response
@@ -20,8 +21,12 @@ class SnippetView(View):
 
     def put(self, request, id):
         snippet = Snippet.objects.get(pk=int(id))
-        snippet.text = request.body.decode()
+        data = json.loads(request.body.decode())
+
+        snippet.text = data.get('text') if data.get('text') else snippet.text
+        snippet.language = data.get('language') if data.get('language') else snippet.language
         snippet.save()
+
         return HttpResponse('ok')
 
 

@@ -45,15 +45,21 @@ def comment_view(request, identifier):
 
 class NewSnippetView(View):
     def get(self, request):
-        s = Snippet(text='', languages='PY', user=request.user)
+        s = Snippet(text='', user=request.user)
         s.save()
         return redirect('/snippet/' + str(s.pk))
 
 
 @login_required(login_url='/login/')
 def users_snippets_view(request):
+    def pairwise(it):
+        odds = it[::2]
+        evens = it[1::2]
+        if len(odds) > len(evens):
+            evens.append(None)
+        return zip(odds, evens)
     snippets = Snippet.objects.filter(user=request.user)
-    return render(request, 'users-snippets.html', {'snippets': snippets})
+    return render(request, 'users-snippets.html', {'snippets': pairwise(snippets)})
 
 
 class RegisterView(FormView):

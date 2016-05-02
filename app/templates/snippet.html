@@ -174,7 +174,14 @@
                             });
                     },
                     sendSnippet: function(content) {
-                        $http.put(this.link, content);
+                        $http.put(this.link, {
+                            text: content
+                        });
+                    },
+                    setSnippetsLanguage: function(content) {
+                        $http.put(this.link, {
+                            language: content
+                        });
                     }
                 };
             }])
@@ -192,6 +199,7 @@
                     SnippetService.fetchSnippet(function(data) {
                         $scope.code = data;
                         $scope.myCodeMirror.setValue(data[0].fields.text);
+                        $scope.myCodeMirror.setOption('mode', data[0].fields.language);
                     });
                 }
                 $scope.postSnippet = function() {
@@ -199,6 +207,7 @@
                     SnippetService.sendSnippet(content);
                 }
                 $scope.switchLanguage = function(language) {
+                    SnippetService.setSnippetsLanguage(language);
                     $scope.myCodeMirror.setOption('mode', language);
                 }
                 updateSnippet();
