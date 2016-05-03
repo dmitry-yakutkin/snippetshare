@@ -3,16 +3,22 @@
 {% block heading %}
 <h1>Login</h1>
 <p>Login in order to write the message </p>
-<p>
-    If you are not registered, please, register.
-    <p><a class="btn btn-primary btn-lg" href="/register" role="button">Register</a></p>
-</p>
+
 {% endblock %}
 
 {% block content %}
-<form action="/login/" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input class="btn btn-default" type="submit" value="Login"/>
+<form action="/login/" method="post" class="flow-text">
+    <div class="col s6">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn light-green lighten-2" type="submit" value="Login"/>
+        <div class="row">
+            <p class="flow-text">
+                If you are not registered, please, <a href="/register" role="button">register</a>.
+            </p>
+        </div>
+    </div>
 </form>
+
+
 {% endblock %}

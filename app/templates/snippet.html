@@ -107,7 +107,7 @@
                         <p></p>
                         <div class="row">
                             <div class="col s6 left-align">
-                                <input class="waves-effect waves-light btn purple accent-4" type="submit" value="Comment"/>
+                                <input class="waves-effect waves-light btn green lighten-2" type="submit" value="Comment"/>
                             </div>
 
                             <div class="col s6 right-align">
@@ -142,12 +142,12 @@
                     <ul class="collection scrolldiv">
                         {% for comment in comments reversed %}
                         <li class="collection-item avatar">
-                            <i class="material-icons material-icons purple-text text-accent-4">comment</i>
+                            <i class="material-icons material-icons green-text text-lighten-2">comment</i>
                             <span class="title">{{comment.user.username}}</span>
                             <p>{{comment.date}}</p>
-                            <p><blockquote>{{comment.text}}</blockquote></p>
+                            <p ><blockquote class="flow-text">{{comment.text}}</blockquote></p>
                             <a href="#{{comment.id}}" class="secondary-content">
-                                <i class="material-icons purple-text text-accent-4">trending_flat</i>
+                                <i class="material-icons green-text text-lighten-2">trending_flat</i>
                             </a>
                         </li>
                         {% endfor %}

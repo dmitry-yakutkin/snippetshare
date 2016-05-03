@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 
 from django.conf import settings
 
+from django.contrib.staticfiles.templatetags.staticfiles import static
+
 
 class Message(models.Model):
     user = models.ForeignKey(User)
@@ -28,10 +30,8 @@ class Snippet(models.Model):
     @property
     def language_image_url(self):
         for l in self.LANGUAGES:
-            print(os.path.join('/static/images/',  l[0] + '.png'))
             if l[0] == self.language:
-
-                return os.path.join(settings.MEDIA_URL, '/static/images/',  l[0] + '.png')
+                return os.path.join(settings.STATIC_URL, 'images',  l[0] + '.png')
 
 
 class Review(models.Model):

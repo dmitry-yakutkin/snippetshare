@@ -6,14 +6,12 @@
 {% endblock %}
 
 {% block content %}
-<div class="panel panel-default">
-    <div class="panel-body">
-        <form method="post" action="/register/">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Register" class="btn btn-default" />
-        </form>
+<form method="post" action="/register/" class="flow-text">
+    <div class="col s6">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Register" class="btn light-green lighten-2 class="flow-text"" />
     </div>
-</div>
+</form>
 
 {% endblock %}

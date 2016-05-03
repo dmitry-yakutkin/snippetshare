@@ -59,7 +59,8 @@ def users_snippets_view(request):
             evens.append(None)
         return zip(odds, evens)
     snippets = Snippet.objects.filter(user=request.user)
-    return render(request, 'users-snippets.html', {'snippets': pairwise(snippets)})
+    return render(request, 'users-snippets.html', {
+        'user': request.user, 'snippets': pairwise(snippets)})
 
 
 class RegisterView(FormView):
