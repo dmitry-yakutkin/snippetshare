@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Guest Book</title>
+    <title>SnippetShare</title>
 
 
 
@@ -10,11 +10,12 @@
 <body>
     <nav>
     <div class="nav-wrapper light-green lighten-2">
-      <a href="{% url 'userssnippets' %}" class="brand-logo">Snippetshare</a>
+      <a href="{% url 'userssnippets' %}" class="brand-logo">{% block heading %}{% endblock %}</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
           {% if user.is_authenticated %}
+          <li><a href="{% url 'allsnippets' %}">Explore</a></li>
           <li><a href="{% url 'userssnippets' %}">Your snippets</a></li>
-          <li><a href="">Explore</a></li>
+          <li><a href="{% url 'logout' %}">Log Out</a></li>
           {% endif %}
       </ul>
     </div>

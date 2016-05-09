@@ -22,6 +22,7 @@ class Snippet(models.Model):
         ('ruby', 'Ruby'),
         ('htmlmixed', 'HTML'),
     )
+    name = models.CharField(max_length=50, null=True, blank=True)
     text = models.CharField(max_length=10000)
     language = models.CharField(
         max_length=2, choices=LANGUAGES, null=True, blank=True)

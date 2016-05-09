@@ -8,7 +8,7 @@ from .forms import LoginForm, RegisterForm, MessageForm
 
 from .models import Message
 
-from django.contrib.auth import models as auth_models, authenticate, login
+from django.contrib.auth import models as auth_models, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from app.models import Snippet, Comment
@@ -28,10 +28,15 @@ class SuccessView(TemplateView):
 
 class SnippetView(View):
     def get(self, request, identifier):
-        comments = Comment.objects.filter(
-            snippet=Snippet.objects.get(pk=(int(identifier))))
+        snippet = Snippet.objects.get(pk=identifier)
+        comments = Comment.objects.filter(snippet=snippet)
         return render(
-            request, 'snippet.html', {'id': identifier, 'comments': comments})
+            request, 'snippet.html', {
+                'name': snippet.name,
+                'id': identifier,
+                'comments': comments,
+                'editable': snippet.user == request.user,
+            })
 
 
 def comment_view(request, identifier):
@@ -50,17 +55,27 @@ class NewSnippetView(View):
         return redirect('/snippet/' + str(s.pk))
 
 
-@login_required(login_url='/login/')
-def users_snippets_view(request):
+def render_snippets(request, snippets, context=None):
     def pairwise(it):
         odds = it[::2]
         evens = it[1::2]
         if len(odds) > len(evens):
             evens.append(None)
         return zip(odds, evens)
+    context.update({
+        'snippets': pairwise(snippets)})
+    return render(request, 'users-snippets.html', context)
+
+
+@login_required(login_url='/login/')
+def users_snippets_view(request):
     snippets = Snippet.objects.filter(user=request.user)
-    return render(request, 'users-snippets.html', {
-        'user': request.user, 'snippets': pairwise(snippets)})
+    return render_snippets(request, snippets, {'title': 'Your snippets'})
+
+
+@login_required(login_url='/login/')
+def all_snippets_view(request):
+    return render_snippets(request, Snippet.objects.all(), {'title': 'Explore'})
 
 
 class RegisterView(FormView):
@@ -90,8 +105,13 @@ class LoginView(FormView):
             username=data['username'], password=data['password'])
         if user is not None:
             login(self.request, user)
-            print('User has logged in:', user.username, user.email)
             return redirect('/snippets')
+        return redirect('/')
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
 
 
 @login_required(login_url='/login/')

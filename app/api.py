@@ -15,8 +15,14 @@ class SnippetView(View):
     serializer_class = SnippetSerializer
 
     def get(self, request, id):
-        snippet = Snippet.objects.filter(id=int(id))
-        snippet_json = serialize('json', list(snippet))
+        snippets = []
+        for snippet in Snippet.objects.filter(id=id):
+            snippets.append({
+                'text': snippet.text,
+                'language': snippet.language,
+                'editable':snippet.user == request.user,
+            })
+        snippet_json = json.dumps(snippets)
         return HttpResponse(snippet_json, content_type='application/json')
 
     def put(self, request, id):
@@ -25,6 +31,7 @@ class SnippetView(View):
 
         snippet.text = data.get('text') if data.get('text') else snippet.text
         snippet.language = data.get('language') if data.get('language') else snippet.language
+        snippet.name = data.get('name') if data.get('name') else snippet.name
         snippet.save()
 
         return HttpResponse('ok')

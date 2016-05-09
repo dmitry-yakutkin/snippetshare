@@ -65,39 +65,45 @@
 
         /* label color */
       .input-field label {
-        color: #aa00ff;
+        color: #81c784;
       }
       /* label focus color */
       .input-field input[type=text]:focus + label {
-        color: #aa00ff;
+        color: #81c784;
       }
       /* label underline focus color */
       .input-field input[type=text]:focus {
-        border-bottom: 1px solid #aa00ff;
-        box-shadow: 0 1px 0 0 #aa00ff;
+        border-bottom: 1px solid #81c784;
+        box-shadow: 0 1px 0 0 #81c784;
       }
       /* valid color */
       .input-field input[type=text].valid {
-        border-bottom: 1px solid #aa00ff;
-        box-shadow: 0 1px 0 0 #aa00ff;
+        border-bottom: 1px solid #81c784;
+        box-shadow: 0 1px 0 0 #81c784;
       }
       /* invalid color */
       .input-field input[type=text].invalid {
-        border-bottom: 1px solid #aa00ff;
-        box-shadow: 0 1px 0 0 #aa00ff;
+        border-bottom: 1px solid #81c784;
+        box-shadow: 0 1px 0 0 #81c784;
       }
       /* icon prefix focus color */
       .input-field .prefix.active {
-        color: #aa00ff;
+        color: #81c784;
       }
+
+      .CodeMirror {
+  border: 1px solid #eee;
+  height: 65vh;
+}
     </style>
     <div>
-        <div class="row" style="height:100vh">
+        <div class="row">
     		<div class="col s8">
-    			<div class="row" style="height:75vh">
-    				<!-- <div class="col s12"> -->
-                        <textarea id="view"></textarea>
-    				<!-- </div> -->
+                <div class="input-field" style="height:10vh">
+                    <input id="snippet-name" type="text" name="text" class="validate" value="{{name}}"/>
+                </div>
+    			<div class="row" style="height:65vh">
+                    <textarea id="view"></textarea>
     			</div>
 
                 <div class="row" style="height:25vh">
@@ -117,6 +123,7 @@
                             <div class="col s6 right-align">
                                 <div class="row">
                                     <div class="col s4">
+                                        {% if editable %}
                                         <ul id="dropdown2" class="dropdown-content">
                                             <li><a href="#!" ng-click="switchLanguage('python')">Python</a></li>
                                             <li><a href="#!" ng-click="switchLanguage('go')">Go</a></li>
@@ -125,13 +132,16 @@
                                             <li><a href="#!" ng-click="switchLanguage('htmlmixed')">HTML</a></li>
                                         </ul>
                                         <a class="btn-floating btn-large dropdown-button deep-orange accent-3" data-activates="dropdown2"><i class="large material-icons mdi-navigation-arrow-drop-down right">code</i></a>
+                                        {% endif %}
                                     </div>
                                     <div class="col s4">
                                         <a href="{% url 'userssnippets' %}" class="btn-floating btn-large yellow accent-4"><i class="large material-icons">toc</i></a>
                                     </div>
+                                    {% if editable %}
                                     <div class="col s4">
                                         <a class="btn-floating btn-large blue darken-1" ng-click="postSnippet()"><i class="large material-icons">done</i></a>
                                     </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -178,9 +188,7 @@
                             });
                     },
                     sendSnippet: function(content) {
-                        $http.put(this.link, {
-                            text: content
-                        });
+                        $http.put(this.link, content);
                     },
                     setSnippetsLanguage: function(content) {
                         $http.put(this.link, {
@@ -202,13 +210,18 @@
                 var updateSnippet = function() {
                     SnippetService.fetchSnippet(function(data) {
                         $scope.code = data;
-                        $scope.myCodeMirror.setValue(data[0].fields.text);
-                        $scope.myCodeMirror.setOption('mode', data[0].fields.language);
+                        $scope.myCodeMirror.setValue(data[0].text);
+                        $scope.myCodeMirror.setOption('mode', data[0].language);
+                        $scope.myCodeMirror.setOption('readOnly', !data[0].editable);
                     });
                 }
                 $scope.postSnippet = function() {
-                    var content = $scope.myCodeMirror.getValue();
-                    SnippetService.sendSnippet(content);
+                    var text = $scope.myCodeMirror.getValue();
+                    var name = document.getElementById("snippet-name").value;
+                    SnippetService.sendSnippet({
+                        text: text,
+                        name: name
+                    });
                 }
                 $scope.switchLanguage = function(language) {
                     SnippetService.setSnippetsLanguage(language);
