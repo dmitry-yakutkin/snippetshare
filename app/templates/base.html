@@ -3,9 +3,6 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>SnippetShare</title>
-
-
-
 </head>
 <body>
     <nav>
@@ -15,7 +12,11 @@
           {% if user.is_authenticated %}
           <li><a href="{% url 'allsnippets' %}">Explore</a></li>
           <li><a href="{% url 'userssnippets' %}">Your snippets</a></li>
-          <li><a href="{% url 'logout' %}">Log Out</a></li>
+
+          <li>
+              <a href="{% url 'logout' %}">
+                  <i class="large material-icons">replay</i>
+              </a> </li>
           {% endif %}
       </ul>
     </div>
